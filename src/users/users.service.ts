@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   async findOneById(id: string) {
-    const user = await this.userModel.findById(id);
+    const user = await this.userModel.findById(id).populate('tasks');
 
     if (!user) throw new HttpException(`${id} this user not found`, 404);
 
