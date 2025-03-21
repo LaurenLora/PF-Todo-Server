@@ -31,7 +31,7 @@ export class AuthService {
     return { _id: user._id, email: user.email };
   }
 
-  async login(user: Pick<Users, '_id' | 'email'>) {
+  async login(user: Pick<Users, '_id' | 'email'>): Promise<{ token: string }> {
     if (!user) throw new HttpException('User nout found', 404);
 
     const payload: JwtPayload = {
