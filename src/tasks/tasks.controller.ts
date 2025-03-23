@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
@@ -13,8 +15,10 @@ import { CreateTaskDto } from './dtos/create-task.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/common/config/storage.config';
 import { UpdateTaskDto } from './dtos/update-task.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('tasks')
+@UseGuards(JwtAuthGuard)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
@@ -51,6 +55,17 @@ export class TasksController {
     @Param('id') id: string,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
+    console.log(id, 'iddd');
     return await this.tasksService.attachFile(id, files);
+  }
+
+  @Get(':id')
+  async findOneById(@Param('id') id: string) {
+    return await this.tasksService.findOneById(id);
+  }
+
+  @Delete(':id')
+  async removeTask(@Param('id') id: string) {
+    return await this.tasksService.removeTask(id);
   }
 }

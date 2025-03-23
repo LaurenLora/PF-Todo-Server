@@ -3,7 +3,7 @@ import mongoose, { Document } from 'mongoose';
 import { Priority } from 'src/common/enums/priority.enum';
 import { Status } from 'src/common/enums/status.enum';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Task extends Document {
   @Prop({ required: true })
   title: string;
