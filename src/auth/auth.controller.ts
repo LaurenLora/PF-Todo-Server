@@ -12,6 +12,7 @@ export class AuthController {
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
+    console.log(email);
     const user = await this.authService.validateUser(email, password);
 
     return await this.authService.login(user);

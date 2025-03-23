@@ -13,9 +13,6 @@ export class Users extends Document {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: false })
-  avatar?: string;
-
   @Prop({ required: true })
   hashedPassword: string;
 

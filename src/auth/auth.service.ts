@@ -5,8 +5,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_ACCESS_EXPIRES_IN, JWT_ACCESS_SECRET } from 'src/common/constants';
+import {
+  JWT_ACCESS_EXPIRES_IN,
+  JWT_ACCESS_SECRET,
+  JWT_REFRESH_EXPIRES_IN,
+  JWT_REFRESH_SECRET,
+} from 'src/common/constants';
 import { JwtPayload } from 'src/common/interfaces/jwt-payload.interface';
+import { LoginReturn } from 'src/common/types';
 import { comparePassword } from 'src/common/utils/hash';
 import { Users } from 'src/users/models/users.schema';
 import { UsersService } from 'src/users/users.service';
@@ -31,7 +37,7 @@ export class AuthService {
     return { _id: user._id, email: user.email };
   }
 
-  async login(user: Pick<Users, '_id' | 'email'>): Promise<{ token: string }> {
+  async login(user: Pick<Users, '_id' | 'email'>): Promise<LoginReturn> {
     if (!user) throw new HttpException('User nout found', 404);
 
     const payload: JwtPayload = {
@@ -45,10 +51,22 @@ export class AuthService {
         expiresIn: this.configService.getOrThrow<string>(JWT_ACCESS_EXPIRES_IN),
       });
 
-      return { token: accessToken };
+      const refreshToken = this.jwtService.sign(payload, {
+        secret: this.configService.getOrThrow<string>(JWT_REFRESH_SECRET),
+        expiresIn: this.configService.getOrThrow<string>(
+          JWT_REFRESH_EXPIRES_IN,
+        ),
+      });
+
+      return {
+        id: user._id.toString(),
+        email: user.email,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
     } catch (error) {
       console.log(error);
-      throw new UnauthorizedException('Errrr');
+      throw new UnauthorizedException('Login Errrr');
     }
   }
 }
