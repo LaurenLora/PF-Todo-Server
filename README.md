@@ -42,3 +42,11 @@ If you need to create secret key for jwt
 ```
 openssl rand -hex 32  || 16
 ```
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+## Sources
+
+MongoDB: https://www.youtube.com/watch?v=dJz94r5C3QA&t=2592s
+Passport Auth: https://www.youtube.com/watch?v=EFDUvzJT_wI&t=1579s
